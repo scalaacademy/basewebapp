@@ -21,7 +21,7 @@ case class SmtpConfig(
                        )
 
 class Account(
-               var accountName: String,
+               var accountName: String = "Account",
                var secret: String = UUID.randomUUID().toString,
                var customSmtpConfig: Boolean = false,
                var smtpConfig: String = "",

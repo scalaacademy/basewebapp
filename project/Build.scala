@@ -1,7 +1,6 @@
 import sbt._
 import Keys._
 import com.earldouglas.xsbtwebplugin._
-import com.openstudy.sbt.ResourceManagementPlugin._
 
 object Build extends sbt.Build {
 

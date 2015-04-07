@@ -18,3 +18,5 @@ email.smtp.starttls.enable=true
 liveServer=false
 
 hostname=localhost:8080
+
+app.cookie.domain=localhost:8080

@@ -80,23 +80,22 @@ class Boot extends Logger {
     })
 
 
-    LiftRules.dispatch.append {
-
-      //      case r@Req(path, suffix, _) if !User.loggedIn &&
-      //        path.headOption != Some("user") &&
-      //        path.headOption != Some("403") &&
-      //        path.headOption != Some("login") &&
-      //        path.headOption != Some("ajax_request") &&
-      //        path.headOption != Some("comet_request") =>
-      //
-      //        if (suffix == "html" || suffix == "") {
-      //          S.containerRequest.map(r => r.uri + r.queryString.dmap("")("?" + _)).filter(_ != "/500").foreach(User.loginRedirect.set(_))
-      //        }
-      //
-      //        () => Full(RedirectResponse("/login"))
-
-      case r@Req("admin" :: _, _, _) if !User.isAdmin => () => Full(ForbiddenResponse())
-    }
+    //    LiftRules.dispatch.append {
+    //
+    ////      case r@Req(path, suffix, _) if !User.loggedIn &&
+    ////        path.headOption != Some("login") &&
+    ////        path.headOption != Some("register") &&
+    ////        path.headOption != Some("ajax_request") &&
+    ////        path.headOption != Some("comet_request") =>
+    ////
+    ////        if (suffix == "html" || suffix == "") {
+    ////          S.containerRequest.map(r => r.uri + r.queryString.dmap("")("?" + _)).filter(_ != "/500").foreach(User.loginRedirect.set(_))
+    ////        }
+    ////
+    ////        () => Full(RedirectResponse("/login"))
+    //
+    //      case r@Req("admin" :: _, _, _) if !User.isAdmin => () => Full(ForbiddenResponse())
+    //    }
 
     //Init the jQuery module, see http://liftweb.net/jquery for more information.
     LiftRules.jsArtifacts = JQueryArtifacts
