@@ -1,0 +1,21 @@
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+    <Set name="contextPath">/</Set>
+    <Set name="war"><SystemProperty name="jetty.base" default="."/>/webapps/ppcadmin.war
+    </Set>
+
+    <Call name="setAttribute">
+        <Arg>org.eclipse.jetty.webapp.basetempdir</Arg>
+        <Arg>/opt/tmp</Arg>
+    </Call>
+
+    <!--Set name="virtualHosts">
+      <Array type="String">
+        <Item>basewebapp.scala-academy.com</Item>
+      </Array>
+    </Set-->
+
+</Configure>
