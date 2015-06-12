@@ -50,6 +50,7 @@ object User {
 
   def currentUserOpt(rememberLogin: String): Option[User] = {
     if (!_currentUser.isDefined)
+
       inTransaction(DBS.users.where(_.rememberLogin === rememberLogin).headOption) match {
         case Some(u) => {
           if (u.active) {

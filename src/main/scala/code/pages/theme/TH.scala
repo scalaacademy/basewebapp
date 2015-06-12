@@ -1,16 +1,18 @@
 package code.pages.theme
 
 
-object TH extends BWAButtons
+object TH extends BWAEditor
+                  with BWAWidgets
                   with BWAIcons
-                  with BWAPortlets
-                  with BWAEditor
-                  with BWANotifications
-                  with BWAInPlaceEditing
-                  with BWATables
-                  with BWAModals
-                  with BWATypography
                   with BWAGrid
+                  with BWABtns
+                  with BWAToastr
+                  with BWAFCharts
+                  with BWAKnob
+                  with BWATable
+                  with BWAInPlaceEditing
+                  with BWAModals2
+                  with BWATypography
                   with BWAUtils {
 
 }

@@ -15,7 +15,7 @@ import net.liftweb.util.Helpers._
 import scala.xml.NodeSeq
 
 
-trait BWAInPlaceEditing extends BWAButtons {
+trait BWAInPlaceEditing {
 
   object InPlace {
 
@@ -39,15 +39,15 @@ trait BWAInPlaceEditing extends BWAButtons {
         if (editing) {
           val cur = toStr(get)
 
-          val setText = SHtml.ajaxCall(JsRaw( s"""$$('#$id').val()"""), s => {
+          val setText = SHtml.ajaxCall(JsRaw(s"""$$('#$id').val()"""), s => {
             editing = false
             fromStr(s).map(set(_)).getOrElse(Noop) & renderer.setHtml() & setValue(JE.Str(toStr(get)))
           })
 
-          <input id={id} type="text" onblur={(setValue(JsRaw( s"""$$('#$id').val()""")) & setText).toJsCmd} onkeyup={s"${setValue(JsRaw( s"""$$('#$id').val()""")).toJsCmd}"} onkeypress={s"liftUtils.lift_blurIfReturn(event)"} style={s"width:${math.max(80, cur.length * 5)}px"} class="inline-editor" value={cur}>{}</input>
+          <input id={id} type="text" onblur={(setValue(JsRaw(s"""$$('#$id').val()""")) & setText).toJsCmd} onkeyup={s"${setValue(JsRaw(s"""$$('#$id').val()""")).toJsCmd}"} onkeypress={s"liftUtils.lift_blurIfReturn(event)"} style={s"width:${math.max(80, cur.length * 5)}px"} class="inline-editor" value={cur}>{}</input>
         } else {
           val value = get
-          val editMode = SHtml.ajaxInvoke(() => {editing = true; renderer.setHtml() & Run( s"""$$('#$id').focus().select();""")}).toJsCmd
+          val editMode = SHtml.ajaxInvoke(() => {editing = true; renderer.setHtml() & Run(s"""$$('#$id').focus().select();""")}).toJsCmd
           <div id={id} style="display:inline;" tabindex="0" class={"inplace-display " + displayClasses(value)} onclick={editMode}>{Some(toStr(value)).filter(_ != "").getOrElse(ifEmpty)}</div>
         }
       })
@@ -86,7 +86,7 @@ trait BWAInPlaceEditing extends BWAButtons {
 
         } else {
           val value = get
-          val editMode = SHtml.ajaxInvoke(() => {editing = true; renderer.setHtml() & Run( s"""$$('#$id').focus().select();""")}).toJsCmd
+          val editMode = SHtml.ajaxInvoke(() => {editing = true; renderer.setHtml() & Run(s"""$$('#$id').focus().select();""")}).toJsCmd
           <div id={id} style="display:inline;" tabindex="0" class={"inplace-display " + displayClasses(value)} onclick={editMode}>{toStr(value)}</div>
         }
       })

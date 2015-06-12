@@ -1,5 +1,6 @@
 package code.pages
 
+
 import code.model.User
 import net.liftweb.http._
 
@@ -22,10 +23,23 @@ object MvcController extends MVCHelper {
   serve {
     case List("login") => @@("pages", "login")(new Login())
     case List("register") => @@("pages", "register")(new Register())
+    case List("passwordreset") => @@("pages", "passwordreset")(new PasswordReset())
 
-    case path if path.headOption.map(h => h != "ajax_request" && h != "comet_request").getOrElse(true) && !User.loggedIn => throw new ResponseShortcutException(RedirectResponse("/login"))
+    case path if path.headOption.map(h => h != "ajax_request" && h != "comet_request").getOrElse(true) && !User.loggedIn => {
+      println(s"NO LOGIN: ${path.mkString("/", "/", "")} => REDIRECT")
+      throw new ResponseShortcutException(RedirectResponse("/login"))
+    }
 
     case List("index") => @@("pages", "empty")(new DashboardPage())
+    case Menu.modalsPage.path => @@("pages", "empty")(new ModalsPage())
+    case Menu.buttonPage.path => @@("pages", "empty")(new ButtonPage())
+    case Menu.toastrPage.path => @@("pages", "empty")(new ToastrNotificationsPage())
+    case Menu.flotchartsPage.path => @@("pages", "empty")(new FlotChartsPage())
+    case Menu.knobPage.path => @@("pages", "empty")(new KnobPage())
+    case Menu.tablePage.path => @@("pages", "empty")(new TablePage())
+
+
+
 
     //case path if path.headOption.map(h => h != "ajax_request" && h != "comet_request").getOrElse(true) && !User.isAdmin => throw new ResponseShortcutException(ForbiddenResponse())
   }

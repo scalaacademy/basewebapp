@@ -6,5 +6,6 @@ object Styles {
 
   val bootstrap: Style = "/static/css/bootstrap.css"
   val bootstrap3: Style = "/static/css/bootstrap3.css"
+  val toastr: Style = "/static/css/toastr.min.css"
 
 }

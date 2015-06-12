@@ -22,28 +22,31 @@ class Login {
 
   def render: NodeSeq => NodeSeq = {
 
-    "@login-btn [onclick]" #> SHtml.jsonCall(
-      JsRaw("[$('#email-input').val(), $('#password-input').val()]"),
-      (_: JValue) match {
-        case JArray(List(JString(email), JString(password))) =>
-          if (email == "") Alert("Email is required.")
-          else if (password == "") Alert("Password is required.")
-          else {
-            inTransaction {
-              DBS.users.where(_.email === email).headOption.foreach(_.login(password))
+    "@login-btn [onclick]" #> {
+      SHtml.jsonCall(
+        JsRaw("[$('#email-input').val(), $('#password-input').val()]"),
+        (_: JValue) match {
+          case JArray(List(JString(email), JString(password))) =>
+            if (email == "") Alert("Email is required.")
+            else if (password == "") Alert("Password is required.")
+            else {
+              inTransaction {
+                DBS.users.where(_.email === email).headOption.foreach(_.login(password))
 
-              User.currentUserOpt.map(user => {
-                val newToken = UUID.randomUUID().toString
-                user.update(user => user.rememberLogin = newToken)
+                User.currentUserOpt.map(user => {
+                  val newToken = UUID.randomUUID().toString
+                  user.update(user => user.rememberLogin = newToken)
 
-                Run(s"document.cookie='rememberLogin=${user.rememberLogin}; path=/; domain=${Props.get("app.cookie.domain").get}';") &
-                  RedirectTo(S.param("redir").getOrElse(User.loginRedirect.get))
-              }).getOrElse({
-                net.liftweb.http.js.JsCmds.Alert("Invalid login.")
-              })
+                  Run(s"document.cookie='rememberLogin=${user.rememberLogin}; path=/;${Props.get("app.cookie.domain").map(domain => s" domain=$domain;").getOrElse("")}'") &
+                    //                  RedirectTo(S.param("redir").getOrElse(User.loginRedirect.get))
+                    RedirectTo("/")
+                }).getOrElse({
+                  net.liftweb.http.js.JsCmds.Alert("Invalid login.")
+                })
+              }
             }
-          }
-        case _ => Alert("All fields are required.")
-      })
+          case _ => Alert("All fields are required.")
+        }).cmd
+    }
   }
 }

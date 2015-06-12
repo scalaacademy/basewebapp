@@ -4,6 +4,7 @@ import code.comet.{PageCometHub, PageComet}
 import code.model._
 import code.pages.theme.{Libs, Styles, TH}
 import code.util.actors.ActorSystemFacade
+import com.github.david04.liftutils.fontawesome.Icon_3_2_1.FAIcon
 import com.github.david04.liftutils.loc.LocP
 import com.github.david04.liftutils.reactive3.{Listener, EmmiterStateful, Emmiter}
 import net.liftweb.common.Full
@@ -14,7 +15,7 @@ import net.liftweb.util.Helpers._
 import net.liftweb.util.{Helpers, ClearNodes, PassThru}
 import org.squeryl.PrimitiveTypeMode._
 
-import scala.xml.NodeSeq
+import scala.xml.{Text, NodeSeq}
 
 class AppState {
   val onNextPage = collection.mutable.ListBuffer[JsCmd]()
@@ -23,6 +24,7 @@ class AppState {
 object StateVar extends SessionVar[AppState](new AppState)
 
 trait StandardPage extends LocP {
+
 
   lazy val TH = code.pages.theme.TH
   lazy val simplePageName = getClass.getSimpleName
@@ -65,14 +67,14 @@ trait StandardPage extends LocP {
 
   def shortcuts: List[(String, JsCmd)] = Nil
 
-  def warnBeforeLeaving(mesg: Option[String]) = Run( s"""window.onbeforeunload = function(){return ${mesg.map(_.encJs).getOrElse("null")};};""")
+  def warnBeforeLeaving(mesg: Option[String]) = Run(s"""window.onbeforeunload = function(){return ${mesg.map(_.encJs).getOrElse("null")};};""")
 
   def initJs() = try {
     userFirstNameEmmiter.setUp() &
       userLastNameEmmiter.setUp() &
       userEmailEmmiter.setUp() &
       state.onNextPage.reduceOption[JsCmd](_ & _).getOrElse(Noop) &
-      shortcuts.map({ case (key, func) => Run( s"""$$(document).bind('keydown', ${key.encJs}, function() {${func.toJsCmd}});""") }).reduceOption[JsCmd](_ & _).getOrElse(Noop)
+      shortcuts.map({ case (key, func) => Run(s"""$$(document).bind('keydown', ${key.encJs}, function() {${func.toJsCmd}});""") }).reduceOption[JsCmd](_ & _).getOrElse(Noop)
   } finally {
     state.onNextPage.clear()
   }
@@ -85,4 +87,50 @@ trait StandardPage extends LocP {
       "@email" #> Listener.span(userEmailEmmiter) andThen
       processLoc()
 
+}
+
+object Menu {
+
+  case class MenuPage(name: String, link: String, icn: TH.Icon) {
+
+    def rendered: NodeSeq = {
+      <li><a href={link}><i class={icn.className}></i> {name}</a></li>
+    }
+
+    val path = link.split("/").drop(1).toList
+  }
+
+  val dashboardPage = MenuPage("Dashboard", "/", TH.IcnFA.icn_dashboard)
+  val modalsPage = MenuPage("Modals", "/modals", TH.IcnFA.icn_laptop)
+  val buttonPage = MenuPage("Button", "/button", TH.IcnFA.icn_hand_o_up)
+  val toastrPage = MenuPage("Toastr Notification", "/toastrNotification", TH.IcnFA.icn_warning)
+  val flotchartsPage = MenuPage("Flot Charts", "/flotCharts", TH.IcnFA.icn_pie_chart)
+  val knobPage = MenuPage("Knob", "/knob", TH.IcnFA.icn_bar_chart_o)
+  val tablePage = MenuPage("Table", "/table", TH.IcnFA.icn_table)
+
+  val pages: List[MenuPage] = List[MenuPage](
+    dashboardPage,
+    modalsPage,
+    buttonPage,
+    toastrPage,
+    flotchartsPage,
+    knobPage,
+    tablePage
+  )
+}
+
+trait MenuPage extends StandardPage {
+  def pageTitle: String
+  def pageSubtitle: String
+
+  override def render: (NodeSeq) => NodeSeq = super.render andThen (
+    "#main-menu *" #> {
+      <ul class="sidebar-menu">
+        <li class="header">MAIN NAVIGATION</li>
+        {Menu.pages.map(_.rendered).reduceOption(_ ++ _).getOrElse(NodeSeq.Empty)}
+      </ul>
+    } &
+      "#page-title *" #> Text(pageTitle) &
+      "#page-subtitle *" #> Text(pageSubtitle)
+    )
 }
